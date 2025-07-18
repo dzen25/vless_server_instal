@@ -16,6 +16,17 @@
 
 На выходе будет несколько готовых конфигурационных файлов, с помощью которых вы сможете получить ссылку для подключения, а так же QR код.
 
+---
+
+## Установка и запуск
+Удаленное выполнение:
+```
+bash -c "$(curl -fsSL https://github.com/dzen25/vless_server_instal/blob/main/install_xray.sh)"
+```
+Локальное выполнение:
+```
+git clone https://github.com/dzen25/vless_server_instal/&&cd vless_server_instal&&sudo bash install_xray.sh
+```
 
 ## Интерактивный режим
 

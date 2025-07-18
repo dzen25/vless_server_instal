@@ -78,17 +78,27 @@ setup_firewall() {
 generate_server_config() {
     echo "🧩 Генерация конфигурации Xray..."
     local config_file="$XRAY_CONFIG_DIR/config.json"
-    clients=()
-
+    
+    # Инициализация массива для клиентов
+    local client_entries=()
+    
+    # Генерация уникальных UUID для каждого устройства
     for i in $(seq 1 "$NUM_DEVICES"); do
-        UUIDs[i]=$(xray uuid)
-        clients+=("{
-            \"id\": \"${UUIDs[i]}\",
-            \"flow\": \"xtls-rprx-vision\",
-            \"email\": \"device-$i\"
+        local uuid=$(xray uuid)
+        UUIDs[$i]="$uuid"
+        
+        # Создание JSON-объекта для клиента
+        client_entries+=("{
+          \"id\": \"$uuid\",
+          \"flow\": \"xtls-rprx-vision\",
+          \"email\": \"device-$i\"
         }")
     done
-
+    
+    # Объединение клиентов через запятую
+    local clients=$(IFS=,; echo "${client_entries[*]}")
+    
+    # Генерация конфигурационного файла
     cat > "$config_file" <<EOF
 {
   "log": {
@@ -100,7 +110,7 @@ generate_server_config() {
     "port": 443,
     "protocol": "vless",
     "settings": {
-      "clients": [${clients[*]}],
+      "clients": [$clients],
       "decryption": "none"
     },
     "streamSettings": {
@@ -139,7 +149,7 @@ generate_client_configs() {
         "address": "$DOMAIN",
         "port": 443,
         "users": [{
-          "id": "${UUIDs[i]}",
+          "id": "${UUIDs[$i]}",
           "flow": "xtls-rprx-vision"
         }]
       }]
@@ -254,7 +264,9 @@ install_xray
 setup_certificates
 setup_firewall
 
+# Объявление массива для хранения UUID
 declare -A UUIDs
+
 generate_server_config
 generate_client_configs
 install_generate_script

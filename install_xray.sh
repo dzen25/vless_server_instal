@@ -172,6 +172,7 @@ install_generate_script() {
 CONFIG_DIR="/etc/xray/client_configs"
 DOMAIN=$(grep DOMAIN /etc/xray/.installed | cut -d= -f2)
 FLOW="xtls-rprx-vision"
+FINGERPRINT="chrome"
 PORT=443
 
 mapfile -t config_files < <(find "$CONFIG_DIR" -maxdepth 1 -name '*.json' | sort)
@@ -194,7 +195,7 @@ fi
 
 selected="${config_files[$((choice-1))]}"
 UUID=$(grep -oP '(?<="id": ")[^"]+' "$selected" | head -1)
-VLESS_URL="vless://${UUID}@${DOMAIN}:${PORT}?flow=${FLOW}&security=tls&type=tcp#${selected##*/}"
+VLESS_URL="vless://${UUID}@${DOMAIN}:${PORT}?flow=${FLOW}&security=tls&type=tcp&fp=${FINGERPRINT}#${selected##*/}"
 
 echo -e "\nСсылка:"
 echo "$VLESS_URL"

@@ -19,11 +19,24 @@
 ---
 
 ## Установка и запуск
-Удаленное выполнение:
+#### Примечание: Скрипт использует ufw с помощью  которого открывает 443/tcp порт и закрывает все остальные.
+Перед установкой проверьте открытости 22 порта, что бы не потерять усправление, командой:
+```
+ufw status
+```
+Если ufw не активен или там нет 22 порта, откройте порт 22 командой:
+```
+ufw allow 22/tcp
+```
+И актививируйте ufw командой:
+```
+ufw enable
+```
+#### Удаленное выполнение:
 ```
 sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/dzen25/vless_server_instal/refs/heads/main/install_xray.sh)"
 ```
-Локальное выполнение:
+#### Локальное выполнение:
 ```
 git clone https://github.com/dzen25/vless_server_instal/&&cd vless_server_instal&&sudo bash install_xray.sh
 ```

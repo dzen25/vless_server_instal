@@ -31,9 +31,9 @@ Email (для Let's Encrypt)
 
 generate_client_config и выбрать нужный конфиг — будет выведена VLESS-ссылка и QR-код.
 
+---
 
-
-### Headless режим (без взаимодействия)
+## Headless режим (без взаимодействия)
 ```
 sudo ./install_xray.sh --headless your.domain.com your@email.com 3
 ```

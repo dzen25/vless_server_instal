@@ -71,7 +71,7 @@ sudo ./install_xray.sh --headless your.domain.com your@email.com 3
 ```
 sudo ./install_xray.sh
 ```
-и выбрав пункт Удалить Xray.
+введя случайные данные если затребует (исправится в следщем апдейте) и выбрав пункт Удалить Xray.
 
 ---
 

@@ -21,7 +21,7 @@
 ## Установка и запуск
 Удаленное выполнение:
 ```
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/dzen25/vless_server_instal/refs/heads/main/install_xray.sh)"
+sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/dzen25/vless_server_instal/refs/heads/main/install_xray.sh)"
 ```
 Локальное выполнение:
 ```

@@ -44,7 +44,7 @@ git clone https://github.com/dzen25/vless_server_instal/&&cd vless_server_instal
 ## Интерактивный режим
 
 ```
-sudo ./install_xray.sh
+sudo bash install_xray.sh
 ```
 
 Скрипт запросит:
@@ -66,7 +66,7 @@ generate_client_config
 
 ## Headless режим (без взаимодействия)
 ```
-sudo ./install_xray.sh --headless your.domain.com your@email.com 3
+sudo bash install_xray.sh --headless your.domain.com your@email.com 3
 ```
 
 ### Параметры:
@@ -84,7 +84,7 @@ sudo ./install_xray.sh --headless your.domain.com your@email.com 3
 Вы можете удалить установку, выполнив:
 
 ```
-sudo ./install_xray.sh
+sudo bash install_xray.sh
 ```
 введя случайные данные если затребует (исправится в следщем апдейте) и выбрав пункт Удалить Xray.
 

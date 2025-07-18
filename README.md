@@ -1,4 +1,4 @@
-# Установка Xray VLESS + TLS
+# Установка сервера Xray VLESS + TLS
 
 ## Описание
 
@@ -21,7 +21,7 @@
 ## Установка и запуск
 Удаленное выполнение:
 ```
-bash -c "$(curl -fsSL https://github.com/dzen25/vless_server_instal/blob/main/install_xray.sh)"
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/dzen25/vless_server_instal/refs/heads/main/install_xray.sh)"
 ```
 Локальное выполнение:
 ```

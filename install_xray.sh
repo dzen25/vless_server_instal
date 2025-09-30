@@ -64,7 +64,7 @@ setup_certificates() {
     chmod 600 "$SSL_DIR/private.key"
     chmod 644 "$SSL_DIR/fullchain.cer"
 
-    (crontab -l 2>/dev/null; echo "0 3 * * * certbot renew --quiet --post-hook \"systemctl restart xray\"") | crontab -
+    (sudo crontab -l 2>/dev/null; echo "0 3 * * * certbot renew --quiet --post-hook \"systemctl restart xray\"") | crontab -
 }
 
 # === Настройка фаервола ===

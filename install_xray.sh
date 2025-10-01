@@ -59,16 +59,17 @@ setup_certificates() {
         exit 1
     }
 
-    # Копируем сертификат в используемую папку Xray
-    cp -f "/etc/letsencrypt/live/$DOMAIN/fullchain.pem" "$SSL_DIR/fullchain.cer"
-    cp -f "/etc/letsencrypt/live/$DOMAIN/privkey.pem" "$SSL_DIR/private.key"
+    # Создаём симлинки на сертификаты
+    ln -sf "/etc/letsencrypt/live/$DOMAIN/fullchain.pem" "$SSL_DIR/fullchain.cer"
+    ln -sf "/etc/letsencrypt/live/$DOMAIN/privkey.pem" "$SSL_DIR/private.key"
 
-    # Устанавливаем владельца и права
-    chown nobody:nogroup "$SSL_DIR/fullchain.cer" "$SSL_DIR/private.key"
+    # Устанавливаем права (но владельца менять на nobody/nogroup уже не обязательно)
     chmod 644 "$SSL_DIR/fullchain.cer"
     chmod 600 "$SSL_DIR/private.key"
-    # Добавляем обновление сертификатов в cron
-    (crontab -l 2>/dev/null | grep -v 'certbot renew'; echo "0 3 * * * certbot renew --quiet --post-hook \"cp -f /etc/letsencrypt/live/$DOMAIN/fullchain.pem $SSL_DIR/fullchain.cer && cp -f /etc/letsencrypt/live/$DOMAIN/privkey.pem $SSL_DIR/private.key && chown nobody:nogroup $SSL_DIR/fullchain.cer $SSL_DIR/private.key && chmod 644 $SSL_DIR/fullchain.cer && chmod 600 $SSL_DIR/private.key && systemctl restart xray\"") | crontab -
+
+    # Добавляем обновление сертификатов в cron (только рестарт Xray)
+    (crontab -l 2>/dev/null | grep -v 'certbot renew'; \
+     echo "0 3 * * * certbot renew --quiet --post-hook \"systemctl restart xray\"") | crontab -
 }
 
 

@@ -51,26 +51,32 @@ install_xray() {
 # === Настройка сертификатов ===
 setup_certificates() {
     echo "🔐 Получение TLS-сертификатов для $DOMAIN..."
+
+    # Получаем сертификат через certbot
     certbot certonly --standalone -d "$DOMAIN" --email "$EMAIL" \
         --agree-tos --non-interactive --key-type ecdsa || {
         echo "❌ Ошибка получения сертификата"
         exit 1
     }
 
-    cp "/etc/letsencrypt/live/$DOMAIN/fullchain.pem" "$SSL_DIR/fullchain.cer"
-    cp "/etc/letsencrypt/live/$DOMAIN/privkey.pem" "$SSL_DIR/private.key"
+    # Копируем сертификат в используемую папку Xray
+    cp -f "/etc/letsencrypt/live/$DOMAIN/fullchain.pem" "$SSL_DIR/fullchain.cer"
+    cp -f "/etc/letsencrypt/live/$DOMAIN/privkey.pem" "$SSL_DIR/private.key"
 
-    chown -R nobody:nogroup "$SSL_DIR"
-    chmod 600 "$SSL_DIR/private.key"
+    # Устанавливаем владельца и права
+    chown nobody:nogroup "$SSL_DIR/fullchain.cer" "$SSL_DIR/private.key"
     chmod 644 "$SSL_DIR/fullchain.cer"
-
-    (sudo crontab -l 2>/dev/null; echo "0 3 * * * certbot renew --quiet --post-hook \"systemctl restart xray\"") | crontab -
+    chmod 600 "$SSL_DIR/private.key"
+    # Добавляем обновление сертификатов в cron
+    (crontab -l 2>/dev/null | grep -v 'certbot renew'; echo "0 3 * * * certbot renew --quiet --post-hook \"cp -f /etc/letsencrypt/live/$DOMAIN/fullchain.pem $SSL_DIR/fullchain.cer && cp -f /etc/letsencrypt/live/$DOMAIN/privkey.pem $SSL_DIR/private.key && chown nobody:nogroup $SSL_DIR/fullchain.cer $SSL_DIR/private.key && chmod 644 $SSL_DIR/fullchain.cer && chmod 600 $SSL_DIR/private.key && systemctl restart xray\"") | crontab -
 }
+
 
 # === Настройка фаервола ===
 setup_firewall() {
     echo "🛡 Настройка UFW..."
     ufw allow 443/tcp > /dev/null
+    ufw allow 80/tcp > /dev/null
     ufw --force enable > /dev/null
 }
 

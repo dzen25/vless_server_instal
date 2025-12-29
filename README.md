@@ -58,7 +58,7 @@ ufw enable
 ### 🚀 Быстрая установка (удалённо)
 
 ```bash
-sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/dzen25/vless_server_instal/main/install_xray.sh)"
+sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/dzen25/vless_server_instal/refs/heads/v3/install_xray.sh)"
 ```
 
 ### 🛠 Локальная установка

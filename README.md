@@ -32,19 +32,10 @@ ufw allow 22/tcp
 ```
 ufw enable
 ```
-#### Удаленное выполнение:
-```
-sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/dzen25/vless_server_instal/refs/heads/v2/install_xray.sh)"
-```
-#### Локальное выполнение:
-```
-git clone https://github.com/dzen25/vless_server_instal/tree/v2/&&cd vless_server_instal&&sudo bash install_xray.sh
-```
 
-## Интерактивный режим
-
+#### Выполнение:
 ```
-sudo bash install_xray.sh
+git clone -b v2 https://github.com/dzen25/vless_server_instal.git&&cd vless_server_instal&&sudo bash install_xray.sh
 ```
 
 Скрипт запросит:
@@ -64,21 +55,6 @@ generate_client_config
 
 ---
 
-## Headless режим (без взаимодействия)
-```
-sudo bash install_xray.sh --headless your.domain.com your@email.com 3
-```
-
-### Параметры:
-
-- Домен
-
-- Email для Let's Encrypt
-
-- Количество клиентов
-
----
-
 ## Удаление
 
 Вы можете удалить установку, выполнив:
@@ -86,7 +62,6 @@ sudo bash install_xray.sh --headless your.domain.com your@email.com 3
 ```
 sudo bash install_xray.sh
 ```
-введя случайные данные если затребует (исправится в следщем апдейте) и выбрав пункт Удалить Xray.
 
 ---
 

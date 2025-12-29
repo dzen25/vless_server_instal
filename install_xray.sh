@@ -54,28 +54,38 @@ install_xray() {
     systemctl enable xray > /dev/null
 }
 
-# === Настройка сертификатов ===
 setup_certificates() {
-    echo "🔐 Получение TLS-сертификатов для $DOMAIN..."
-
-    # Освобождаем порт 80 если он занят Xray
-    systemctl stop xray 2>/dev/null || true
-
-    # Получаем сертификат через certbot
-    if ! certbot certonly --standalone -d "$DOMAIN" --email "$EMAIL" \
-        --agree-tos --non-interactive --key-type ecdsa --force-renewal; then
-        echo "❌ Ошибка получения сертификата"
-        exit 1
+    echo "🔐 Проверка TLS-сертификатов для $DOMAIN..."
+    
+    # Проверяем, есть ли уже сертификат
+    if [ -f "/etc/letsencrypt/live/$DOMAIN/fullchain.pem" ]; then
+        echo "✅ Сертификат уже существует, используем его"
+    else
+        echo "🔄 Получение нового сертификата через certbot..."
+        
+        # Освобождаем порт 80 если он занят Xray
+        systemctl stop xray 2>/dev/null || true
+        
+        # Пробуем получить сертификат БЕЗ --force-renewal
+        if ! certbot certonly --standalone -d "$DOMAIN" --email "$EMAIL" \
+            --agree-tos --non-interactive --key-type ecdsa; then
+            echo "⚠️ Не удалось получить новый сертификат"
+            echo "   Либо лимит исчерпан, либо другая ошибка"
+            echo "   Проверь: sudo certbot certificates"
+            return 1  # Не выходим, может есть старый сертификат
+        fi
     fi
-
-    # КОПИРУЕМ сертификаты в директорию Xray (не симлинки!)
+    
+    # КОПИРУЕМ сертификаты в директорию Xray
     cp "/etc/letsencrypt/live/$DOMAIN/fullchain.pem" "$XRAY_CERT_DIR/fullchain.cer"
     cp "/etc/letsencrypt/live/$DOMAIN/privkey.pem" "$XRAY_CERT_DIR/private.key"
     
-    # Устанавливаем правильные права для пользователя nobody
+    # Устанавливаем правильные права
     chown nobody:nogroup "$XRAY_CERT_DIR"/*
     chmod 644 "$XRAY_CERT_DIR/fullchain.cer"
     chmod 600 "$XRAY_CERT_DIR/private.key"
+    
+    echo "✅ Сертификаты готовы к использованию"
 
     # Добавляем обновление сертификатов в cron с КОПИРОВАНИЕМ
     (crontab -l 2>/dev/null | grep -v "certbot renew.*$DOMAIN"; \

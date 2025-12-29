@@ -109,9 +109,7 @@ generate_server_config() {
     cat > "$config_file" <<EOF
 {
   "log": {
-    "loglevel": "warning",
-    "access": "/var/log/xray/access.log",
-    "error": "/var/log/xray/error.log"
+    "loglevel": "warning"
   },
   "inbounds": [{
     "port": 443,

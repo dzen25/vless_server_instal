@@ -116,20 +116,30 @@ generate_reality_keys() {
     echo "✅ Reality ключи сгенерированы"
 }
 
-# === Генерация серверного конфига с TLS и Reality ===
 generate_server_config() {
     echo "🧩 Генерация конфигурации Xray..."
     local config_file="$XRAY_CONFIG_DIR/config.json"
     
-    # Загружаем Reality ключи если есть
+    # Загружаем Reality ключи
     if [ -f /etc/xray/reality_keys ]; then
         . /etc/xray/reality_keys
     else
-        generate_reality_keys
-        . /etc/xray/reality_keys
+        echo "❌ Файл с Reality ключами не найден"
+        exit 1
     fi
     
-    # Генерация конфигурационного файла с TLS и Reality
+    echo "DEBUG: PRIVATE_KEY=$PRIVATE_KEY"
+    echo "DEBUG: PUBLIC_KEY=$PUBLIC_KEY"
+    echo "DEBUG: SHORT_ID1=$SHORT_ID1"
+    echo "DEBUG: SHORT_ID2=$SHORT_ID2"
+    
+    # Проверяем что ключи не пустые
+    if [ -z "$PRIVATE_KEY" ] || [ -z "$PUBLIC_KEY" ]; then
+        echo "❌ Reality ключи пустые"
+        exit 1
+    fi
+    
+    # Генерация конфигурационного файла с ПОДСТАНОВКОЙ переменных
     cat > "$config_file" <<EOF
 {
   "log": {
@@ -190,14 +200,27 @@ generate_server_config() {
 }
 EOF
 
+    echo "✅ Конфиг создан. Проверяем содержимое..."
+    
+    # Проверяем что privateKey записался
+    if ! grep -q "\"privateKey\": \"$PRIVATE_KEY\"" "$config_file"; then
+        echo "❌ privateKey не записался в конфиг"
+        echo "Первые 20 строк конфига:"
+        head -20 "$config_file"
+        exit 1
+    fi
+    
     # Проверяем конфиг перед запуском
+    echo "Проверка конфига..."
     if ! /usr/local/bin/xray run -test -config "$config_file"; then
         echo "❌ Ошибка в конфигурации Xray"
+        echo "Содержимое конфига:"
+        cat "$config_file"
         exit 1
     fi
     
     systemctl restart xray
-    echo "✅ Серверный конфиг создан (TLS на порту 443, Reality на порту 8443)"
+    echo "✅ Серверный конфиг создан"
 }
 
 # === Генерация нового клиентского конфига ===

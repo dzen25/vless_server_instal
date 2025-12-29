@@ -34,11 +34,11 @@ ufw enable
 ```
 #### Удаленное выполнение:
 ```
-sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/dzen25/vless_server_instal/refs/heads/main/install_xray.sh)"
+sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/dzen25/vless_server_instal/refs/heads/v2/install_xray.sh)"
 ```
 #### Локальное выполнение:
 ```
-git clone https://github.com/dzen25/vless_server_instal/&&cd vless_server_instal&&sudo bash install_xray.sh
+git clone https://github.com/dzen25/vless_server_instal/tree/v2/&&cd vless_server_instal&&sudo bash install_xray.sh
 ```
 
 ## Интерактивный режим

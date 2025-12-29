@@ -64,7 +64,7 @@ sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/dzen25/vless_server
 ### 🛠 Локальная установка
 
 ```bash
-git clone https://github.com/dzen25/vless_server_instal.git
+git clone -b v2 https://github.com/dzen25/vless_server_instal.git
 cd vless_server_instal
 sudo bash install_xray.sh
 ```

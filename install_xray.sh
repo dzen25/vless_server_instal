@@ -48,6 +48,14 @@ install_xray() {
     systemctl enable xray > /dev/null
 }
 
+# === Настройка фаервола ===
+setup_firewall() {
+    echo "🛡 Настройка UFW..."
+    ufw allow 443/tcp > /dev/null
+    ufw allow 80/tcp > /dev/null
+    ufw --force enable > /dev/null
+}
+
 # === Настройка сертификатов ===
 setup_certificates() {
     echo "🔐 Получение TLS-сертификатов для $DOMAIN..."
@@ -70,15 +78,6 @@ setup_certificates() {
     # Добавляем обновление сертификатов в cron (только рестарт Xray)
     (crontab -l 2>/dev/null | grep -v 'certbot renew'; \
      echo "0 3 * * * certbot renew --quiet --post-hook \"systemctl restart xray\"") | crontab -
-}
-
-
-# === Настройка фаервола ===
-setup_firewall() {
-    echo "🛡 Настройка UFW..."
-    ufw allow 443/tcp > /dev/null
-    ufw allow 80/tcp > /dev/null
-    ufw --force enable > /dev/null
 }
 
 # === Генерация UUID и серверного конфигурационного файла ===
